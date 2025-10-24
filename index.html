@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doubles Tennis Americano</title>
+    <title>Doubles Tennis</title>
     <style>
         :root {
             --primary: #436f4d;
@@ -393,6 +393,9 @@
             
             // Show rounds section
             roundsSection.style.display = 'block';
+            
+            // Save tournament to file
+            saveToHtmlFile();
         }
         
         function shuffleArray(array) {
@@ -484,6 +487,61 @@
             }
             
             return assignments;
+        }
+        
+        function saveToHtmlFile() {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `tournament-${timestamp}.html`;
+            
+            // Create tournament summary HTML
+            const tournamentHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Tournament ${timestamp}</title>
+    <style>
+        ${(document.querySelector('style') ? document.querySelector('style').innerHTML : '')}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>David Lloyd Cambridge Friday Social Tennis</h1>
+            <p class="subtitle">Tournament Schedule - Generated ${new Date().toLocaleString()}</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Tournament Rounds</h2>
+                <div class="instructions">
+                    <h3>Round Schedule:</h3>
+                    <ul>
+                        <li>Round 1: 19:00 - 19:45</li>
+                        <li>Round 2: 19:50 - 20:20</li>
+                        <li>Round 3: 20:25 - 20:55</li>
+                    </ul>
+                </div>
+                <div class="rounds-grid">
+                    ${document.getElementById('rounds-container').innerHTML}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            // Create download link
+            const blob = new Blob([tournamentHtml], { type: 'text/html' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         }
     </script>
 </body>
